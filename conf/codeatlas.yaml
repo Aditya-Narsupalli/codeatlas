@@ -1,0 +1,41 @@
+# CodeAtlas configuration
+# Extension layer over RAGFlow — do not modify RAGFlow's own conf/ files.
+# All features default to false. Enable them here to activate.
+
+codeatlas:
+  # Logging
+  log_level: "INFO"   # DEBUG | INFO | WARNING | ERROR
+
+  # Feature flags — every flag must default to false.
+  # Phases that own each flag are noted inline.
+  features:
+    # Phase 2: Git repository connector
+    git_connector: false
+
+    # Phase 3: AST-aware source code connector
+    code_connector: false
+
+    # Phases 4 + 5: Code-aware search (preprocessor + re-ranker)
+    code_search: false
+
+    # Phases 6–10: Architecture explorer (symbol graph + UI)
+    arch_explorer: false
+
+    # Phase 11: Suggested reading order agent
+    reading_order: false
+
+    # Phase 12: Architecture report agent
+    arch_report: false
+
+    # Phases 13–15: Cross-source knowledge linking
+    knowledge_linking: false
+
+    # Phase 16: Call graph builder
+    call_graph: false
+
+    # Phase 17: Drift detection worker
+    drift_detection: false
+
+    # Phase 18: Guided debugging agent (sandbox off by default)
+    guided_debug: false
+    debug_sandbox: false
