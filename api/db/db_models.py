@@ -1425,6 +1425,56 @@ class TenantModelGroupMapping(DataBaseModel):
         primary_key = CompositeKey("group_id", "provider_id", "instance_id", "model_id")
 
 
+# ---------------------------------------------------------------------------
+# CodeAtlas Phase 7 — Architecture Graph schema
+# ---------------------------------------------------------------------------
+# Two new tables that store the architecture graph for a knowledge base.
+# These models are picked up automatically by init_database_tables() via the
+# inspect.getmembers(sys.modules[__name__]) scan — no manual registration needed.
+# No data is written here; writes happen in Phase 8 (ArchGraphBuilder).
+# ---------------------------------------------------------------------------
+
+
+class ArchGraphNode(DataBaseModel):
+    """One symbol node in the architecture graph for a knowledge base."""
+
+    id = CharField(max_length=32, primary_key=True, help_text="Node UUID")
+    kb_id = CharField(max_length=32, null=False, index=True,
+                      help_text="Knowledge base this node belongs to")
+    symbol = CharField(max_length=255, null=False, index=True,
+                       help_text="Symbol name, e.g. 'MyClass' or 'parse_commit_log'")
+    kind = CharField(max_length=16, null=False, default="function",
+                     help_text="function|class")
+    file = CharField(max_length=512, null=False, default="",
+                     help_text="Source file path relative to repo root")
+    start_line = IntegerField(null=False, default=0, index=False,
+                              help_text="1-based start line of the symbol definition")
+    end_line = IntegerField(null=False, default=0, index=False,
+                            help_text="1-based end line of the symbol definition")
+    language = CharField(max_length=32, null=False, default="python",
+                         help_text="Programming language tag, e.g. 'python'")
+
+    class Meta:
+        db_table = "arch_graph_nodes"
+
+
+class ArchGraphEdge(DataBaseModel):
+    """A directed edge between two symbol nodes in the architecture graph."""
+
+    id = CharField(max_length=32, primary_key=True, help_text="Edge UUID")
+    source_id = CharField(max_length=32, null=False, index=True,
+                          help_text="UUID of the source ArchGraphNode")
+    target_id = CharField(max_length=32, null=False, index=True,
+                          help_text="UUID of the target ArchGraphNode")
+    edge_type = CharField(max_length=32, null=False, default="import", index=True,
+                          help_text="import|call|inherit — type of dependency")
+    kb_id = CharField(max_length=32, null=False, index=True,
+                      help_text="Knowledge base this edge belongs to")
+
+    class Meta:
+        db_table = "arch_graph_edges"
+
+
 def alter_db_add_column(migrator, table_name, column_name, column_type):
     try:
         migrate(migrator.add_column(table_name, column_name, column_type))
