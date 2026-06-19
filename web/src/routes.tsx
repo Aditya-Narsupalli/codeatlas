@@ -75,6 +75,9 @@ export enum Routes {
   AdminWhitelist = `${Admin}/whitelist`,
   AdminRoles = `${Admin}/roles`,
   AdminMonitoring = `${Admin}/monitoring`,
+
+  // CodeAtlas Phase 10 — Architecture Explorer
+  CodeAtlasArchExplorer = '/codeatlas/arch-explorer',
 }
 
 const defaultRouteFallback = (
@@ -410,6 +413,11 @@ const routeConfigOptions = [
       },
     ],
   } satisfies LazyRouteConfig,
+  // CodeAtlas Phase 10 — Architecture Explorer page
+  {
+    path: Routes.CodeAtlasArchExplorer,
+    Component: () => import('@/pages/CodeAtlas/ArchExplorer'),
+  },
 ];
 
 const wrapRoutes = (routes: LazyRouteConfig[]): RouteObject[] =>
