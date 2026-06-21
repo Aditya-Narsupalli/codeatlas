@@ -1475,6 +1475,46 @@ class ArchGraphEdge(DataBaseModel):
         db_table = "arch_graph_edges"
 
 
+# ---------------------------------------------------------------------------
+# CodeAtlas Phase 13 — Knowledge Links schema
+# ---------------------------------------------------------------------------
+# Final CodeAtlas schema migration. Links a chunk from one source type
+# (e.g. a doc chunk) to a chunk from another source type (e.g. a code
+# chunk) when an entity resolver determines they refer to the same concept.
+# This model is picked up automatically by init_database_tables() via the
+# inspect.getmembers(sys.modules[__name__]) scan — no manual registration
+# needed. No data is written here; writes happen in Phase 14 (EntityResolver).
+#
+# source_chunk_id / target_chunk_id reference RAGFlow chunk IDs as stored in
+# the document store (Elasticsearch/Infinity), which are opaque strings —
+# not foreign keys into a SQL table — matching the existing
+# Task.chunk_ids / DialogTestCase.relevant_chunk_ids convention elsewhere
+# in this file (chunk identifiers are always plain string fields, never a
+# declared SQL FK, since the document store is a separate system).
+# ---------------------------------------------------------------------------
+
+
+class KnowledgeLink(DataBaseModel):
+    """A cross-source link between two chunks resolved to the same entity."""
+
+    id = CharField(max_length=32, primary_key=True, help_text="Link UUID")
+    source_chunk_id = CharField(max_length=32, null=False, index=True,
+                                help_text="Chunk ID of the link's source side "
+                                          "(document store chunk id)")
+    target_chunk_id = CharField(max_length=32, null=False, index=True,
+                                help_text="Chunk ID of the link's target side "
+                                          "(document store chunk id)")
+    link_type = CharField(max_length=32, null=False, default="entity_match",
+                          index=True,
+                          help_text="entity_match|reference|other — "
+                                    "classification of the link")
+    confidence = FloatField(null=False, default=0.0,
+                            help_text="Resolver confidence score in [0.0, 1.0]")
+
+    class Meta:
+        db_table = "knowledge_links"
+
+
 def alter_db_add_column(migrator, table_name, column_name, column_type):
     try:
         migrate(migrator.add_column(table_name, column_name, column_type))
