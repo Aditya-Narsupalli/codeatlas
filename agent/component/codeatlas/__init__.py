@@ -22,8 +22,8 @@
 # defers FACTORY/registration wiring to a later activation step, matching
 # the pattern used in Phases 2, 3, and 9).
 #
-# Phase 11 adds: ReadingOrderComponent
-# Phase 12 will add: ArchReportComponent
+# Phase 11 added: ReadingOrderComponent
+# Phase 12 adds: ArchReportComponent
 # ---------------------------------------------------------------------------
 
 from agent.component.codeatlas.reading_order import (
@@ -32,10 +32,24 @@ from agent.component.codeatlas.reading_order import (
     CandidateDocument,
     ReadingOrderItem,
 )
+from agent.component.codeatlas.report import (
+    ArchReportComponent,
+    ArchReportParam,
+    GraphData,
+    GraphNodeData,
+    GraphEdgeData,
+    RetrievedChunk,
+)
 
 __all__ = [
     "ReadingOrderComponent",
     "ReadingOrderParam",
     "CandidateDocument",
     "ReadingOrderItem",
+    "ArchReportComponent",
+    "ArchReportParam",
+    "GraphData",
+    "GraphNodeData",
+    "GraphEdgeData",
+    "RetrievedChunk",
 ]
