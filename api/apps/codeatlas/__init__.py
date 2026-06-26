@@ -34,6 +34,7 @@ blueprint = Blueprint("codeatlas", __name__)
 
 # Import routes so their @blueprint.route decorators execute at import time.
 from api.apps.codeatlas import arch_api as _arch_api  # noqa: E402, F401
+from api.apps.codeatlas import flow_api as _flow_api  # noqa: E402, F401  Phase 16
 
 
 def register_codeatlas_routes(app) -> None:
